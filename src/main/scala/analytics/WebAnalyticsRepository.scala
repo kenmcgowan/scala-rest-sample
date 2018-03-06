@@ -9,12 +9,12 @@ trait WebAnalyticsRepositoryModule {
 
   val webAnalyticsRepository: WebAnalyticsRepository
 
-  case class Measure(name: String, value: Int)
+  case class Measurement(name: String, value: Int)
 
   abstract class WebAnalyticsRepository {
     def storeClick(epochHour: Int, userId: String): Unit
     def storeImpression(epochHour: Int, userId: String): Unit
-    def retrieveMeasures(epochHour: Int): Iterable[Measure]
+    def retrieveMeasurements(epochHour: Int): Iterable[Measurement]
   }
 
   class PostgresqlWebAnalyticsRepository extends WebAnalyticsRepository {
@@ -35,13 +35,13 @@ trait WebAnalyticsRepositoryModule {
           .apply()
       }
 
-    def retrieveMeasures(epochHour: Int): Iterable[Measure] = {
+    def retrieveMeasurements(epochHour: Int): Iterable[Measurement] = {
       NamedDB('analytics) readOnly (implicit session =>
         sql"SELECT m.measure_name, m.measure_value FROM web.measures AS m WHERE m.epoch_hour = ${epochHour}"
           .map(rs => (rs.string("measure_name"), rs.int("measure_value")))
           .list.apply()
           .toMap |+| Map("clicks" -> 0, "impressions" -> 0, "unique_users" -> 0)
-          map { case (k,v) => Measure(k, v) }
+          map { case (k,v) => Measurement(k, v) }
         )
     }
   }
