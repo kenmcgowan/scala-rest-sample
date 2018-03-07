@@ -4,6 +4,7 @@ import scala.concurrent.ExecutionContextExecutor
 import scala.io.StdIn
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
+import akka.event.Logging
 import com.typesafe.config.ConfigFactory
 
 object Application extends App
@@ -13,14 +14,14 @@ object Application extends App
 
   val webAnalyticsRepository: WebAnalyticsRepository = new PostgresqlWebAnalyticsRepository()
   val webAnalyticsService: WebAnalyticsService = new WebAnalyticsService()
-  implicit val system = ActorSystem()
+  implicit val actorSystem = ActorSystem()
   implicit val materializer = ActorMaterializer()
-  implicit val executionContext = system.dispatcher
+  implicit val executionContext = actorSystem.dispatcher
   val config = ConfigFactory.load()
+  val logger = Logging(actorSystem, getClass)
 
   val bindingFuture = startup()
 
-  println("Server online, press RETURN to stop…")
   StdIn.readLine()
 
   shutdown(bindingFuture)
