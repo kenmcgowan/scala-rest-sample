@@ -8,7 +8,8 @@ import akka.event.Logging
 import com.typesafe.config.ConfigFactory
 
 object Application extends App
-  with WebAnalyticsEndpointsModule
+  with WebAnalyticsRestServerModule
+  with WebAnalyticsRestEndpointsModule
   with WebAnalyticsServiceModule
   with WebAnalyticsRepositoryModule {
 

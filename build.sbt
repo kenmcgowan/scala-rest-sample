@@ -34,6 +34,7 @@ lazy val root = (project in file("."))
     )
   )
 
+// Tasks for integration test container management
 lazy val imageName = "postgres_analytics"
 lazy val containerName = "postgres_analytics_it"
 
