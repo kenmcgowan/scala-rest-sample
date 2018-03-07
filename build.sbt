@@ -23,6 +23,8 @@ libraryDependencies ++= Seq(
   "org.scalaz" %% "scalaz-core" % "7.2.20"
 )
 
+(scalastyleConfig in Test) := baseDirectory.value / "scalastyle-config-test.xml"
+
 lazy val root = (project in file("."))
   .configs(IntegrationTest)
   .settings(
