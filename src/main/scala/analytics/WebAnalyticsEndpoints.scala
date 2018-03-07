@@ -6,7 +6,8 @@ import akka.http.scaladsl.model.{ContentTypes, HttpEntity, StatusCodes}
 import akka.http.scaladsl.server.Directives._
 import akka.stream.ActorMaterializer
 import akka.event.LoggingAdapter
-import scala.concurrent.{ExecutionContextExecutor, Future}
+import scala.concurrent.{Await, ExecutionContextExecutor, Future}
+import scala.concurrent.duration._
 import com.typesafe.config.Config
 
 trait WebAnalyticsEndpointsModule {
@@ -39,16 +40,19 @@ trait WebAnalyticsEndpointsModule {
   val config: Config
   val logger: LoggingAdapter
 
-  def startup(): Future[Http.ServerBinding] = {
-    val address: String = config.getString("http.address")
-    val port:Int = config.getInt("http.port")
-    logger.info(s"Starting HTTP server on ${address} port ${port}")
-    Http().bindAndHandle(route, address, port)
+  //shutdown Hook
+  scala.sys.addShutdownHook {
+    logger.info("Shutting down...")
+    actorSystem.terminate()
+    Await.result(actorSystem.whenTerminated, 10.seconds)
+    logger.info("Shutdown complete.")
   }
 
-  def shutdown(bindingFuture: Future[Http.ServerBinding]) {
-    bindingFuture
-      .flatMap(_.unbind())
-      .onComplete(_ => actorSystem.terminate())
+  def start(): Unit = {
+    val address: String = config.getString("http.address")
+    val port:Int = config.getInt("http.port")
+
+    logger.info(s"Starting HTTP server on ${address} port ${port}")
+    Http().bindAndHandle(route, address, port)
   }
 }

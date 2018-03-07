@@ -20,9 +20,5 @@ object Application extends App
   val config = ConfigFactory.load()
   val logger = Logging(actorSystem, getClass)
 
-  val bindingFuture = startup()
-
-  StdIn.readLine()
-
-  shutdown(bindingFuture)
+  start()
 }
