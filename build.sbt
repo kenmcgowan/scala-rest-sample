@@ -9,7 +9,6 @@ lazy val commonSettings = Seq(
 lazy val akkaVersion = "2.5.9"
 lazy val akkaHttpVersion = "10.1.0-RC2"
 lazy val scalikeVersion = "3.2.1"
-lazy val scalatest = "org.scalatest" %% "scalatest" % "3.0.5"
 
 libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-actor" % akkaVersion,
@@ -30,8 +29,8 @@ lazy val root = (project in file("."))
     commonSettings,
     Defaults.itSettings,
     libraryDependencies ++= Seq(
-      scalatest % "it,test",
-      "org.scalamock" %% "scalamock" % "4.1.0" % Test
+      "org.scalatest" %% "scalatest" % "3.0.5" % "it,test",
+      "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpVersion % Test
     )
   )
 
@@ -72,5 +71,3 @@ dbsetup in IntegrationTest := { Def.sequential(
     .dependsOn(dbsetup in IntegrationTest)
     .andFinally { destroyTestContainer }
   }.value
-
-mainClass in run := Some("com.kenmcgowan.narrativeio.analytics.WebHost")
