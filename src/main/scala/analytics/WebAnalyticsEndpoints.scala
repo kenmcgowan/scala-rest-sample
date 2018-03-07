@@ -5,13 +5,12 @@ import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity, StatusCodes}
 import akka.http.scaladsl.server.Directives._
 import akka.stream.ActorMaterializer
-import scala.concurrent.Future
-import com.typesafe.config.{Config, ConfigFactory}
+import scala.concurrent.{ExecutionContextExecutor, Future}
+import com.typesafe.config.Config
 
 trait WebAnalyticsEndpointsModule {
   this: WebAnalyticsServiceModule with WebAnalyticsRepositoryModule =>
 
-  val config = ConfigFactory.load()
   val route = path ("analytics") {
     put {
       parameters('timestamp.as[Long], 'user) { (epochMillis, userId) =>
@@ -33,9 +32,10 @@ trait WebAnalyticsEndpointsModule {
     }
   }
 
-  implicit val system = ActorSystem()
-  implicit val materializer = ActorMaterializer()
-  implicit val executionContext = system.dispatcher
+  implicit val system: ActorSystem
+  implicit val materializer: ActorMaterializer
+  implicit val executionContext: ExecutionContextExecutor
+  val config: Config
 
   def startup(): Future[Http.ServerBinding] = {
     Http().bindAndHandle(route, config.getString("http.interface"), config.getInt("http.port"))
