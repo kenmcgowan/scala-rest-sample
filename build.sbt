@@ -72,3 +72,5 @@ dbsetup in IntegrationTest := { Def.sequential(
     .dependsOn(dbsetup in IntegrationTest)
     .andFinally { destroyTestContainer }
   }.value
+
+mainClass in run := Some("com.kenmcgowan.narrativeio.analytics.WebHost")
