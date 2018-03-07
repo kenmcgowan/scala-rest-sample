@@ -7,7 +7,7 @@ trait WebAnalyticsRestEndpointsModule {
   this: WebAnalyticsServiceModule with WebAnalyticsRepositoryModule =>
 
   val route = path ("analytics") {
-    put {
+    post {
       parameters('timestamp.as[Long], 'user) { (epochMillis, userId) =>
         parameters('event ! "click") {
           webAnalyticsService.registerClick(epochMillis, userId)
