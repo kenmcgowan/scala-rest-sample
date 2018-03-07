@@ -1,4 +1,4 @@
-package com.kenmcgowan.narrativeio.analytics
+package com.kenmcgowan.narrativeio.analytics.integrationtests
 
 import org.scalatest.{GivenWhenThen, Matchers}
 import org.scalatest.FlatSpec

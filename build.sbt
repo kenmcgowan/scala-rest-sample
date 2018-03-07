@@ -29,7 +29,10 @@ lazy val root = (project in file("."))
   .settings(
     commonSettings,
     Defaults.itSettings,
-    libraryDependencies += scalatest % "it,test"
+    libraryDependencies ++= Seq(
+      scalatest % "it,test",
+      "org.scalamock" %% "scalamock" % "4.1.0" % Test
+    )
   )
 
 lazy val imageName = "postgres_analytics"

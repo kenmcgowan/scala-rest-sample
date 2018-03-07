@@ -1,6 +1,6 @@
-package com.kenmcgowan.narrativeio.analytics
+package com.kenmcgowan.narrativeio.analytics.integrationtests
 
-import com.kenmcgowan.narrativeio._
+import com.kenmcgowan.narrativeio.analytics._
 import scalikejdbc._
 
 class PostgresqlWebAnalyticsRepositoryTestFixture extends TestFixtureModule with WebAnalyticsRepositoryModule {
