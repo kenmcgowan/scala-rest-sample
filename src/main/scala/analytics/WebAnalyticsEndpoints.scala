@@ -38,7 +38,7 @@ trait WebAnalyticsEndpointsModule {
   val config: Config
 
   def startup(): Future[Http.ServerBinding] = {
-    Http().bindAndHandle(route, config.getString("http.interface"), config.getInt("http.port"))
+    Http().bindAndHandle(route, config.getString("http.address"), config.getInt("http.port"))
   }
 
   def shutdown(bindingFuture: Future[Http.ServerBinding]) {
