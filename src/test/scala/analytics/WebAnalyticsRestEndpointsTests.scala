@@ -27,7 +27,7 @@ class WebAnalyticsRestEndpointsTests
   }
 
   val webAnalyticsService = DummyService
-  val webAnalyticsRepository = null
+  val webAnalyticsRepository = null // Not needed since the dummy service does nothing.
 
   "WebAnalyticsRestEndpointsModule" should {
 
@@ -47,6 +47,43 @@ class WebAnalyticsRestEndpointsTests
       Get("/analytics?timestamp=112358") ~> route ~> check {
         status shouldEqual StatusCodes.OK
         responseAs[String] shouldEqual "clicks,2468\nimpressions,13579\nunique_users,149\n"
+      }
+    }
+
+    "Reject a GET without the correct parameters" in {
+      Get("/analytics") ~> route ~> check {
+        handled shouldEqual false
+      }
+    }
+
+    "Reject a POST without the correct parameters" in {
+      Post("/analytics") ~> route ~> check {
+        handled shouldEqual false
+      }
+    }
+
+    "Reject a GET on the root URL" in {
+      Get() ~> route ~> check {
+        handled shouldEqual false
+      }
+    }
+
+    "Reject a POST on the root URL" in {
+      Post() ~> route ~> check {
+        handled shouldEqual false
+      }
+    }
+
+    "Handle a GET with unknown additional parameters" in {
+      Get("/analytics?timestamp=1925&unknown_extra_param=true") ~> route ~> check {
+        status shouldEqual StatusCodes.OK
+        responseAs[String] shouldEqual "clicks,2468\nimpressions,13579\nunique_users,149\n"
+      }
+    }
+
+    "Handle a POST with unknown additional parameters" in {
+      Post("/analytics?timestamp=1925&user=someone&event=click&unknown_extra_param=true") ~> route ~> check {
+        status shouldEqual StatusCodes.NoContent
       }
     }
   }
