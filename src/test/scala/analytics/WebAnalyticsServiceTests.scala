@@ -1,7 +1,6 @@
 package com.kenmcgowan.narrativeio.analytics.tests
 
 import com.kenmcgowan.narrativeio.analytics._
-import org.scalamock.scalatest.MockFactory
 
 trait TestContext extends WebAnalyticsServiceModule with WebAnalyticsRepositoryModule {
   def op(sut: WebAnalyticsService): Unit
