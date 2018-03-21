@@ -44,17 +44,16 @@ lazy val dbcreate = taskKey[Unit]("Attempts to create and start a new instance o
 lazy val dbdestroy = taskKey[Unit]("Attempts to destroy the analytics db container for integration tests (the container itself, not the image)")
 lazy val dbstart = taskKey[Unit]("Attempts to start a stopped, preexisting instance of the analytics DB container for integration tests")
 lazy val dbstop = taskKey[Unit]("Attempts to stop a preexisting instance of the analytics db container for integration tests")
-lazy val dbteardown = taskKey[Unit]("Attempts to stop and destroy a preexisting, running instance of the analytics db container for integration tests")
 lazy val dbip = taskKey[String]("Gets the IP address for any running instance of the analytics db container for integration tests")
 lazy val dbconfigure = taskKey[Unit]("Generates a configuration file that references dynamic properties of containers for testing")
 lazy val dbsetup = taskKey[Unit]("Set up the databse for integration testing, including configuration")
 
-def createTestContainer: Unit = { s"sudo docker run --name $containerName -e POSTGRES_PASSWORD=postgres -d $imageName" #&& "sleep 2" ! }
-def destroyTestContainer: Unit = { s"sudo docker rm --force $containerName" ! }
-def startTestContainer: Unit = { s"sudo docker start $containerName" ! }
-def stopTestContainer: Unit = { s"sudo docker stop $containerName" ! }
+def createTestContainer: Unit = { s"docker run --name $containerName -e POSTGRES_PASSWORD=postgres -d $imageName" #&& "sleep 3" ! }
+def destroyTestContainer: Unit = { s"docker rm --force $containerName" ! }
+def startTestContainer: Unit = { s"docker start $containerName" ! }
+def stopTestContainer: Unit = { s"docker stop $containerName" ! }
 def getTestContainerIP: String = { {
-  s"sudo docker inspect --format '{{.NetworkSettings.IPAddress}}' $containerName" #|
+  s"docker inspect --format '{{.NetworkSettings.IPAddress}}' $containerName" #|
   """grep -oE [0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}""" !! } replace("\n", "") }
 def generateTestConf: Unit = { s"""echo db.analytics.url="jdbc:postgresql://$getTestContainerIP:5432/analytics"""" #> file("./src/it/resources/generated.conf") ! }
 
